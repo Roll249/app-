@@ -21,12 +21,27 @@
 - JWT Authentication
 - Redis Cache
 
-### Khởi động Backend
+### Thiết lập và khởi động Backend
+
+### Khởi tạo Database (migration + seed data)
+
+```bash
+# Cách 1 (khuyên dùng): chạy PostgreSQL bằng Docker
+docker compose up -d postgres
+
+# Cách 2: nếu đã có PostgreSQL local thì tạo DB thủ công
+psql -U postgres -c "CREATE DATABASE fintech_db;"
+```
+
+Sau khi DB đã sẵn sàng, chạy backend để tự động tạo schema và seed dữ liệu mẫu (ngân hàng + danh mục mặc định):
 
 ```bash
 cd backend
-./gradlew run
+npm install
+npm run dev
 ```
+
+Lần chạy đầu tiên backend sẽ tự động chạy migration theo mã nguồn (`initDatabase`) và tạo dữ liệu mặc định.
 
 Backend chạy trên port 3000
 
