@@ -1,0 +1,110 @@
+# =============================================================================
+# Personal Finance App - Docker Compose 配置文件
+# 用于编排后端服务和 PostgreSQL 数据库
+# =============================================================================
+
+services:
+  # ==========================================================================
+  # PostgreSQL 数据库服务
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: fintech-postgres
+    restart: unless-stopped
+    environment:
+      # 数据库配置
+      POSTGRES_DB: fintech_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # 持久化数据库数据
+      - postgres_data:/var/lib/postgresql/data
+      # 初始化 SQL 脚本 (可选)
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fintech_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - fintech-network
+
+  # ==========================================================================
+  # 后端 API 服务
+  # ==========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fintech-backend
+    restart: unless-stopped
+    environment:
+      # 数据库连接
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres123}@postgres:5432/fintech_db
+      # JWT 配置
+      JWT_SECRET: ${JWT_SECRET:-fintech-backend-jwt-secret-key-change-in-production-minimum-32-chars}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-fintech-backend-refresh-secret-key-change-in-production-64-chars}
+      # 服务配置
+      PORT: 3000
+      NODE_ENV: ${NODE_ENV:-production}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      # 限流配置
+      RATE_LIMIT_MAX: 100
+      RATE_LIMIT_WINDOW_MS: 60000
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      # 等待 PostgreSQL 就绪后再启动
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - fintech-network
+
+  # ==========================================================================
+  # pgAdmin 数据库管理界面 (可选，仅开发环境启用)
+  # ==========================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fintech-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@fintech.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      # 持久化 pgAdmin 配置
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    profiles:
+      - devtools
+    networks:
+      - fintech-network
+
+# =============================================================================
+# 网络配置
+# =============================================================================
+networks:
+  fintech-network:
+    driver: bridge
+
+# =============================================================================
+# 数据卷配置
+# =============================================================================
+volumes:
+  # PostgreSQL 数据持久化
+  postgres_data:
+    driver: local
+  # pgAdmin 配置持久化
+  pgadmin_data:
+    driver: local

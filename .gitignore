@@ -1,0 +1,73 @@
+# ====================
+# Common
+# ====================
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+
+# ====================
+# Backend (Node.js)
+# ====================
+backend/node_modules/
+backend/dist/
+backend/build/
+
+# Environment
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# Logs
+backend/logs/
+
+# Coverage
+backend/coverage/
+
+# ====================
+# Android
+# ====================
+*.apk
+*.aab
+*.dex
+*.class
+
+# Built files
+android-client/build/
+android-client/app/build/
+android-client/app/release/
+android-client/app/debug/
+
+# Generated files
+android-client/app/generated/
+android-client/.gradle/
+android-client/.idea/
+
+# Local config
+android-client/local.properties
+android-client/gradle.properties
+android-client/gradle/wrapper/gradle-wrapper.jar
+
+# Keystore
+*.jks
+*.keystore
+*.p12
+*.myp12
+
+# Debug
+android-client/app/src/test/
+android-client/app/src/androidTest/
