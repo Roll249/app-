@@ -300,6 +300,12 @@ fun AppNavigation(
                     onNavigateToAbout = {
                         navController.navigate(Screen.About.route)
                     },
+                    onNavigateToServices = {
+                        navController.navigate(Screen.Services.route)
+                    },
+                    onNavigateToMarket = {
+                        navController.navigate(Screen.Market.route)
+                    },
                     onLogout = {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
@@ -347,6 +353,34 @@ fun AppNavigation(
                     LaunchedEffect(Unit) {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.AIChat.route) { inclusive = true }
+                        }
+                    }
+                }
+            }
+
+            composable(Screen.Services.route) {
+                if (isLoggedIn) {
+                    com.fintech.ui.services.ServicesScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                } else {
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Services.route) { inclusive = true }
+                        }
+                    }
+                }
+            }
+
+            composable(Screen.Market.route) {
+                if (isLoggedIn) {
+                    com.fintech.ui.market.MarketScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                } else {
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Market.route) { inclusive = true }
                         }
                     }
                 }

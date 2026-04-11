@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editorial Finance - Budgets &amp; Group Funds</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#35ae7f",
+                    "on-tertiary-fixed": "#002114",
+                    "tertiary-fixed-dim": "#68dba9",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-primary-fixed-variant": "#1f477b",
+                    "on-primary-fixed": "#001b3c",
+                    "secondary": "#006c49",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#003b27",
+                    "surface-tint": "#3a5f94",
+                    "on-secondary-fixed": "#002113",
+                    "on-surface": "#191c1d",
+                    "tertiary": "#002316",
+                    "surface-container-low": "#f3f4f5",
+                    "error": "#ba1a1a",
+                    "primary-container": "#003366",
+                    "on-primary-container": "#799dd6",
+                    "surface-variant": "#e1e3e4",
+                    "tertiary-fixed": "#85f8c4",
+                    "on-surface-variant": "#43474f",
+                    "surface": "#f8f9fa",
+                    "primary-fixed": "#d5e3ff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#a7c8ff",
+                    "surface-container-highest": "#e1e3e4",
+                    "primary-fixed-dim": "#a7c8ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface-bright": "#f8f9fa",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005137",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c3c6d1",
+                    "on-secondary-container": "#00714d",
+                    "outline": "#737780",
+                    "surface-dim": "#d9dadb",
+                    "inverse-surface": "#2e3132",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#f8f9fa",
+                    "secondary-container": "#6cf8bb",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-background": "#191c1d",
+                    "primary": "#001e40",
+                    "surface-container": "#edeeef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8f9fa;
+      }
+      h1, h2, h3, .headline-md {
+        font-family: 'Manrope', sans-serif;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-slate-50 dark:bg-slate-950 flex justify-between items-center px-6 py-4 w-full fixed top-0 z-40">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-primary-container">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional woman with a warm smile, soft natural office lighting, blurred modern interior background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdAbZP3KXv8g1odpPDPJ5e9Q9qfqC8LxDsArU4yOSYwC-KoX6ZnL6soJ8QLri0cwhGwKXnxUDDhmJOZ--ibk1AxQtweT7zreXdeTYJsd1E_fAObF4IDoYVkO_DDYQPr5xch7oYWuHd7sPBn23Mn-8LSHhTXepLibdNPRsynIjon0OebtQvIHu267f1RlaLn09RvBNOIZ6bERmW9BaJ_iLdwPQbnPpqH1aBCkcQJ02eG2R5PUGouPxZUjcUT5oqaHMiUECCzV9fnQE"/>
+</div>
+<span class="font-['Manrope'] text-xl font-bold tracking-tight text-[#001e40] dark:text-white">Editorial Finance</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#001e40] dark:text-[#f8f9fa] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+<!-- Hero Section & Tab Switcher -->
+<section class="mb-10">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="text-4xl font-extrabold text-primary tracking-tight mb-2">Treasury</h1>
+<p class="text-on-surface-variant font-medium">Curate your spending and shared growth.</p>
+</div>
+<button class="bg-primary text-on-primary px-6 py-3 rounded-md font-bold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined">add</span>
+<span>Create New</span>
+</button>
+</div>
+<!-- Custom Tabs -->
+<div class="flex gap-2 p-1 bg-surface-container-low rounded-lg w-fit">
+<button class="px-6 py-2 rounded-lg bg-surface-container-lowest text-primary font-bold shadow-sm">My Budgets</button>
+<button class="px-6 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container transition-colors">Group Funds</button>
+</div>
+</section>
+<!-- Main Content Bento-style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- My Budgets Column (Left/Main) -->
+<div class="md:col-span-7 space-y-6">
+<h2 class="text-xl font-bold text-primary flex items-center gap-2 px-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                    Monthly Allowance
+                </h2>
+<!-- Budget Card: Food -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(0,30,64,0.04)]">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined text-3xl">restaurant</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-primary">Dining &amp; Groceries</h3>
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-widest">Variable Expense</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-bold text-primary">$842.00</span>
+<p class="text-sm text-on-surface-variant">of $1,200.00</p>
+</div>
+</div>
+<!-- Custom Progress Bar -->
+<div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 70%;"></div>
+</div>
+<div class="flex justify-between mt-3">
+<span class="text-xs font-bold text-secondary">70% utilized</span>
+<span class="text-xs font-medium text-on-surface-variant">12 days remaining</span>
+</div>
+</div>
+<!-- Budget Card: Transport -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(0,30,64,0.04)]">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined text-3xl">directions_car</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-primary">Transport</h3>
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-widest">Commute &amp; Fuel</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-bold text-primary">$120.50</span>
+<p class="text-sm text-on-surface-variant">of $450.00</p>
+</div>
+</div>
+<div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 26%;"></div>
+</div>
+<div class="flex justify-between mt-3">
+<span class="text-xs font-bold text-secondary">26% utilized</span>
+<span class="text-xs font-medium text-on-surface-variant text-secondary">Under budget</span>
+</div>
+</div>
+<!-- Budget Card: Entertainment (Warning State) -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(0,30,64,0.04)]">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined text-3xl">theater_comedy</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-primary">Entertainment</h3>
+<p class="text-xs font-medium text-on-surface-variant uppercase tracking-widest">Leisure &amp; Hobbies</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xl font-bold text-error">$295.00</span>
+<p class="text-sm text-on-surface-variant">of $300.00</p>
+</div>
+</div>
+<div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 98%;"></div>
+</div>
+<div class="flex justify-between mt-3">
+<span class="text-xs font-bold text-error">98% utilized</span>
+<span class="text-xs font-bold text-error">Critical Limit</span>
+</div>
+</div>
+</div>
+<!-- Group Funds Column (Right/Sidebar) -->
+<div class="md:col-span-5 space-y-6">
+<h2 class="text-xl font-bold text-primary flex items-center gap-2 px-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                    Collective Wealth
+                </h2>
+<!-- Fund Card: Travel -->
+<div class="bg-primary-container text-on-primary-container p-6 rounded-lg relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-8">
+<h3 class="text-2xl font-bold text-white leading-tight">Travel Fund<br/><span class="text-on-primary-container text-sm font-medium">Summer in Amalfi</span></h3>
+<span class="material-symbols-outlined text-on-primary-container opacity-40 text-4xl">flight_takeoff</span>
+</div>
+<div class="mb-8">
+<p class="text-xs font-bold tracking-widest uppercase mb-1 opacity-70">Total Accumulated</p>
+<h4 class="text-3xl font-extrabold text-white">$12,450.00</h4>
+<p class="text-sm font-medium mt-1">Goal: $15,000.00</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img alt="Member 1" class="w-full h-full object-cover" data-alt="close-up portrait of a young man with glasses, soft cinematic lighting, urban cafe background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1kneDl0-5vFociK7qQQvgLOyFhELqFjE-h6EkMCVCTryxMFozTmPLCK1YArmifq50JMzW01NiNHY_TdMn1ZZ--U2RjQ46Bcwb5luU17B6t9QxXzPMeuENcFib0YPLDXFyQVQN5UVawbyzYxRTchcKi2qs93qD3GiuDFDGl4xgX37Vywp9zQbTdKM-1IdpAdWM_JhTHChKhaYShSxXGXzA8tYtKIftc4DXRiJ92O2qZG5MLHHR75_hCO_wGJaFXwfmiQ7sXBMOh2w"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img alt="Member 2" class="w-full h-full object-cover" data-alt="portrait of a professional woman in a white blazer, minimalist bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfR9vwy7poiK8qSvdXpVU_8byn0HKRDti1R73GQEWVEcTtX8EZqF-IhN9BK2KrxM_scImn3w4D8RSLEo1oBdal4wUhvxbqkaMIQzb7es3HbXlUmQNPkRrbSznlShD1kZM4S9P69IgMXiNVQdLA93Y2gYYgO2Iym721F7wfkh_th9JTg_RISbzNFF7vTwxT4-fY24eNsfpBmlDX2FuEBvNntOrm5U6uRf6Dkzru0rH2BbT1y6oVqvyqMtGgjFsGh5LUB44yRMl9aFc"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img alt="Member 3" class="w-full h-full object-cover" data-alt="close-up of a stylish man smiling, warm golden hour outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXdC2m_STdfZuKxar5C_K02vG3GXA9GKUOqp0nTiYN2uNQ68kndqTwLPcYTiKP9J3ON2wosj9ER_CPBirbcb4Z4EnSJpdL6cVaFG8a4hK8dkgOtd7VNn-pL78RGba2uoOJomoIrRHNr8ksWQU3Ht-bzwycK7jkHSomARpVv1jBfsCyxq88kcwNBgKO8SsEPe1g8MlN86Ov2LjjdAnbAipedhke3ob0iT4CYTbFytMpHDFK1cEeuXT80GoIirY9b5Le7qW4BwvG7IY"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container bg-secondary-container text-on-secondary-container flex items-center justify-center text-xs font-bold">
+                                    +2
+                                </div>
+</div>
+<button class="bg-secondary text-white p-2 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Decorative Background Image/Pattern -->
+<div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+<img alt="Abstract Pattern" class="w-full h-full object-cover" data-alt="minimalist topographic map lines with organic curves, monochrome deep navy and cyan tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiE9DXHNiDG569UAGnWBIfksr4bDc4sYFILlvNxM517cADKKj6nGG2lGm_w1yBaKtqgVuNQzkC1kIHfkNr9WV7ujWHGN_VSw4jFp64rVmTTP8TE1FIenkErpbjd-JnDmFbV5QusDL8fK57_vVFpy5XAzu4AENruY2sDbGYxC5II8QuGVIbIcWfl2GmAZEFz05WhrXfhrqgPHC3fZ-PaEEzeWg3Lv9NSGvXiuKpGJ788dMfkXLA_ZjCmGJPt5heMRDsdNq_V_y0cgI"/>
+</div>
+</div>
+<!-- Fund Card: Family Expenses -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_12px_40px_rgba(0,30,64,0.04)] border-l-4 border-secondary">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-bold text-lg text-primary">Family Expenses</h3>
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">Active Pool</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-sm font-medium text-on-surface-variant">Balance</span>
+<span class="font-bold text-primary">$4,200.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm font-medium text-on-surface-variant">Last Contribution</span>
+<span class="text-sm font-bold text-secondary">+$250 (Today)</span>
+</div>
+<div class="flex -space-x-2 pt-2">
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="Member 4" class="w-full h-full object-cover" data-alt="elderly man with a kind smile, soft daylight in a lush garden background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8TwxOsx4XoD9MNTQGMj7zCgbXmGDw9uehMys0IM2W_x-9fojQVQW2OLTmP-S2OwdeyhQEZiYd5980POZBOcIr8DDxfr_W4NaYKAZWJxF9U0ELn91m0zB4gmEmuSmJQO-j4jBdSLASX7ZNKR6FND0VdNdZKRuRQrn5l_g3rcN4o1it5mnGUS5DaLYyPneKtWk86DwZcfLMDD1DqAZyHqijgdX3y77TIJqGOz6PMPMBISIELOqFzEtz7RE8k4WU94k_GNU-3km1Shk"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200">
+<img alt="Member 5" class="w-full h-full object-cover" data-alt="middle-aged woman laughing, soft focus kitchen interior with warm morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdmtsy2LMfse2XS0JNAbEJ1uXfC8KgXR23Aj-M9wqC4hEwbfxmPY58UUqBIFZa4d6q9J8ihXpW-AP0ijf3DNbjhP3_sAW9v0mptrpRDFUe9oEH4fHv449Yl2bHW8M1uTYgiqiCSivT3LItvqldYwTJ8r8iTTk2c5Dw-XOHo52DXzv3EB359W-HApo7OXe9x2NZ7kGecn7neTDQi32hCRBgJv5xEj9pDs-amvF_iC5dZhAlnpG9vpllvrCWQWjPWMUkER3zQuEm8QI"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Recommendation Bento Item -->
+<div class="bg-tertiary-container p-6 rounded-lg text-on-tertiary">
+<span class="material-symbols-outlined text-tertiary-fixed text-4xl mb-4">insights</span>
+<h3 class="text-lg font-bold mb-2 text-white">Savings Insight</h3>
+<p class="text-sm opacity-80 leading-relaxed">By pooling funds with 3 more members, you could reach your 'Amalfi' goal 2 months faster.</p>
+<button class="mt-4 text-tertiary-fixed font-bold text-sm flex items-center gap-1 hover:underline">
+                        Optimize Pool <span class="material-symbols-outlined text-xs">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-[#001e40]/70 backdrop-blur-xl shadow-[0_-12px_40px_rgba(0,30,64,0.04)] rounded-t-[3rem]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] dark:hover:text-[#6ffbbe] transition-colors">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] dark:hover:text-[#6ffbbe] transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">History</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#006c49] dark:text-[#6ffbbe] font-bold bg-[#6ffbbe]/20 rounded-full px-4 py-1 Active: scale-90 duration-200">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Fina</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] dark:hover:text-[#6ffbbe] transition-colors">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Growth</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] dark:hover:text-[#6ffbbe] transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">More</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#35ae7f",
+                    "on-tertiary-fixed": "#002114",
+                    "tertiary-fixed-dim": "#68dba9",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-primary-fixed-variant": "#1f477b",
+                    "on-primary-fixed": "#001b3c",
+                    "secondary": "#006c49",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#003b27",
+                    "surface-tint": "#3a5f94",
+                    "on-secondary-fixed": "#002113",
+                    "on-surface": "#191c1d",
+                    "tertiary": "#002316",
+                    "surface-container-low": "#f3f4f5",
+                    "error": "#ba1a1a",
+                    "primary-container": "#003366",
+                    "on-primary-container": "#799dd6",
+                    "surface-variant": "#e1e3e4",
+                    "tertiary-fixed": "#85f8c4",
+                    "on-surface-variant": "#43474f",
+                    "surface": "#f8f9fa",
+                    "primary-fixed": "#d5e3ff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#a7c8ff",
+                    "surface-container-highest": "#e1e3e4",
+                    "primary-fixed-dim": "#a7c8ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface-bright": "#f8f9fa",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005137",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c3c6d1",
+                    "on-secondary-container": "#00714d",
+                    "outline": "#737780",
+                    "surface-dim": "#d9dadb",
+                    "inverse-surface": "#2e3132",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#f8f9fa",
+                    "secondary-container": "#6cf8bb",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-background": "#191c1d",
+                    "primary": "#001e40",
+                    "surface-container": "#edeeef"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline-md { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-slate-50 dark:bg-slate-950 flex justify-between items-center px-6 py-4 w-full sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" data-alt="Close up professional portrait of a tech-focused individual with neutral background and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQ1pxEDss1U8J_Ta3Ozdb6a4ExngilspfS_XoRnSNW1MqhWbPrjxa_QMrPgmjzZZVtS9UCkrvNdgRvN8aMUUZ8V0pdUyY0SkUNBvkUs2cQ2nx0Rk5gFJLF09rewz5vkwiPgbRAYJh2_C7-4CJMQeQ8_ytVslEI1-2Z-Se06BRxMf2NL4V28IBVbjdwoHl8JnB1dNm_zqKCA3UjQaR1izRzP-sgpLV4NKrZExg0deZxpHj1r_pvFK8ZLXY_47SQ_0YjN_O2tMZm6lA"/>
+</div>
+<span class="font-['Manrope'] text-xl font-bold tracking-tight text-[#001e40] dark:text-white">Editorial Finance</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 dark:text-slate-500 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-6 py-8">
+<!-- Overall Health Banner -->
+<section class="mb-10">
+<div class="relative overflow-hidden bg-primary-container rounded-lg p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex h-3 w-3 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+</span>
+<span class="label-md font-medium text-on-primary-container tracking-wider uppercase">System Integrity</span>
+</div>
+<h1 class="display-lg text-white font-headline font-extrabold leading-tight">All Systems Operational</h1>
+<p class="text-on-primary-container text-body-lg mt-2 max-w-md">Global health index at 99.98%. All 6 external service layers are responding within nominal parameters.</p>
+</div>
+<div class="relative z-10 bg-white/10 backdrop-blur-md rounded-lg p-6 border border-white/10 flex flex-col items-center">
+<div class="text-secondary text-4xl font-headline font-bold">12ms</div>
+<div class="text-on-primary-container text-xs font-medium uppercase mt-1">Avg. Latency</div>
+</div>
+<!-- Abstract Background Ornament -->
+<div class="absolute right-0 top-0 w-64 h-64 bg-secondary opacity-10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+</div>
+</section>
+<!-- Service Management Header -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="headline-md font-bold text-primary tracking-tight">Service Health Check</h2>
+<p class="text-on-surface-variant text-body-lg mt-1">Real-time status monitoring for integrated financial nodes.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 rounded-full bg-surface-container-high text-primary font-semibold text-sm flex items-center gap-2 hover:bg-surface-dim transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+                    Refresh All
+                </button>
+</div>
+</div>
+<!-- Bento Grid for Services -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- AI Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-secondary-fixed rounded-xl flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest">Healthy</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">AI Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Predictive analytics &amp; curation engine</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-primary font-mono font-bold">42ms</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">Just now</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[94%]"></div>
+</div>
+</div>
+</div>
+<!-- Banking Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-secondary-fixed rounded-xl flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest">Healthy</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">Banking Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Core transaction &amp; ledger bridge</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-primary font-mono font-bold">118ms</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">2m ago</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[98%]"></div>
+</div>
+</div>
+</div>
+<!-- Notification Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center text-on-primary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="mail" style="font-variation-settings: 'FILL' 1;">mail</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed text-[10px] font-bold uppercase tracking-widest">Initializing</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">Notification Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Push alerts &amp; webhooks engine</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-primary font-mono font-bold">--</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">Booting...</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary-container/30 rounded-full w-[25%] animate-pulse"></div>
+</div>
+</div>
+</div>
+<!-- Sync Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-secondary-fixed rounded-xl flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="sync" style="font-variation-settings: 'FILL' 1;">sync</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest">Healthy</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">Sync Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Cross-device state synchronization</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-primary font-mono font-bold">18ms</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">Just now</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[99%]"></div>
+</div>
+</div>
+</div>
+<!-- Market Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-secondary-fixed rounded-xl flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="show_chart" style="font-variation-settings: 'FILL' 1;">show_chart</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest">Healthy</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">Market Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Real-time stock &amp; crypto data feed</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-primary font-mono font-bold">204ms</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">5s ago</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[92%]"></div>
+</div>
+</div>
+</div>
+<!-- Investment Service Card -->
+<div class="bg-surface-container-lowest rounded-lg p-6 flex flex-col justify-between transition-all hover:scale-[1.02] duration-300">
+<div>
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 bg-error-container rounded-xl flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase tracking-widest">Offline</span>
+</div>
+<h3 class="text-xl font-headline font-bold text-primary">Investment Service</h3>
+<p class="text-on-surface-variant text-sm mt-1">Portfolio management &amp; trading API</p>
+</div>
+<div class="mt-8 space-y-3 pt-6 border-t border-surface-container-low">
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Latency</span>
+<span class="text-error font-mono font-bold">Timeout</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-on-surface-variant">Last Sync</span>
+<span class="text-primary font-medium">14m ago</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full w-0"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- System Logs / Activity Summary Section -->
+<section class="mt-12 bg-surface-container-low rounded-lg p-8">
+<h3 class="text-lg font-headline font-bold text-primary mb-6">Recent Status Changes</h3>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-2 h-2 rounded-full bg-secondary mt-2"></div>
+<div>
+<p class="text-primary font-medium text-sm">Banking Service recovered from intermittent latency.</p>
+<p class="text-on-surface-variant text-xs mt-1">14:22:01 UTC - System Auto-resolution</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-2 h-2 rounded-full bg-error mt-2"></div>
+<div>
+<p class="text-primary font-medium text-sm">Investment Service entered "Offline" state due to upstream provider outage.</p>
+<p class="text-on-surface-variant text-xs mt-1">14:10:45 UTC - Connectivity Error (503)</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-2 h-2 rounded-full bg-primary mt-2"></div>
+<div>
+<p class="text-primary font-medium text-sm">Notification Service deployment initiated.</p>
+<p class="text-on-surface-variant text-xs mt-1">14:05:00 UTC - CI/CD Trigger</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-[#001e40]/70 backdrop-blur-xl shadow-[0_-12px_40px_rgba(0,30,64,0.04)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Fina</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#006c49] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Growth</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#006c49] dark:text-[#6ffbbe] font-bold bg-[#6ffbbe]/20 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">More</span>
+</a>
+</nav>
+</body></html>

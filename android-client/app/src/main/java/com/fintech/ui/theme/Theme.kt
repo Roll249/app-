@@ -10,53 +10,124 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryLight,
-    onPrimary = Color.White,
-    primaryContainer = PrimaryDark,
-    onPrimaryContainer = Color.White,
-    secondary = SecondaryLight,
-    onSecondary = Color.Black,
-    secondaryContainer = SecondaryDark,
-    onSecondaryContainer = Color.White,
-    tertiary = AccentLight,
-    onTertiary = Color.Black,
-    background = BackgroundDark,
-    onBackground = TextPrimaryDark,
-    surface = SurfaceDark,
-    onSurface = TextPrimaryDark,
-    surfaceVariant = Color(0xFF2D2D2D),
-    onSurfaceVariant = TextSecondaryDark,
+// =============================================================================
+// EDITORIAL FINANCE COLOR SCHEMES
+// =============================================================================
+
+private val EditorialLightColorScheme = lightColorScheme(
+    // Primary - Deep Navy
+    primary = Primary,
+    onPrimary = OnPrimary,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
+    
+    // Secondary - Emerald
+    secondary = Secondary,
+    onSecondary = OnSecondary,
+    secondaryContainer = SecondaryContainer,
+    onSecondaryContainer = OnSecondaryContainer,
+    
+    // Tertiary
+    tertiary = Tertiary,
+    onTertiary = OnTertiary,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+    
+    // Error
     error = Error,
-    onError = Color.White
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    
+    // Surface
+    background = Surface,
+    onBackground = OnBackground,
+    surface = Surface,
+    onSurface = OnSurface,
+    surfaceBright = SurfaceBright,
+    surfaceDim = SurfaceDim,
+    surfaceContainer = SurfaceContainer,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest,
+    surfaceContainerLowest = SurfaceContainerLowest,
+    surfaceTint = SurfaceTint,
+    surfaceVariant = SurfaceContainerLow,
+    onSurfaceVariant = OnSurfaceVariant,
+    
+    // Inverse
+    inverseSurface = InverseSurface,
+    inverseOnSurface = InverseOnSurface,
+    inversePrimary = InversePrimary,
+    
+    // Outline
+    outline = Outline,
+    outlineVariant = OutlineVariant
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = Color.White,
+private val EditorialDarkColorScheme = darkColorScheme(
+    // Primary
+    primary = OnPrimary,
+    onPrimary = Primary,
     primaryContainer = PrimaryLight,
-    onPrimaryContainer = Color.White,
-    secondary = Secondary,
-    onSecondary = Color.White,
-    secondaryContainer = SecondaryLight,
-    onSecondaryContainer = Color.Black,
-    tertiary = Accent,
-    onTertiary = Color.White,
-    background = Background,
-    onBackground = TextPrimary,
-    surface = Surface,
-    onSurface = TextPrimary,
-    surfaceVariant = Color(0xFFE0E0E0),
-    onSurfaceVariant = TextSecondary,
+    onPrimaryContainer = PrimaryLight,
+    
+    // Secondary
+    secondary = SecondaryLight,
+    onSecondary = OnSecondary,
+    secondaryContainer = SecondaryDark,
+    onSecondaryContainer = SecondaryLight,
+    
+    // Tertiary
+    tertiary = TertiaryFixed,
+    onTertiary = OnTertiary,
+    tertiaryContainer = TertiaryDark,
+    onTertiaryContainer = TertiaryFixed,
+    
+    // Error
     error = Error,
-    onError = Color.White
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer,
+    
+    // Surface
+    background = SurfaceDark,
+    onBackground = OnBackgroundDark,
+    surface = SurfaceDark,
+    onSurface = OnSurfaceDark,
+    surfaceBright = SurfaceBrightDark,
+    surfaceDim = SurfaceDim,
+    surfaceContainer = SurfaceContainerDark,
+    surfaceContainerLow = SurfaceContainerLowDark,
+    surfaceContainerHigh = SurfaceContainerHighDark,
+    surfaceContainerHighest = SurfaceContainerHighestDark,
+    surfaceContainerLowest = SurfaceContainerLowestDark,
+    surfaceTint = SurfaceTint,
+    surfaceVariant = SurfaceContainerLowDark,
+    onSurfaceVariant = OnSurfaceVariantDark,
+    
+    // Inverse
+    inverseSurface = SurfaceContainerLowest,
+    inverseOnSurface = OnSurface,
+    inversePrimary = PrimaryLight,
+    
+    // Outline
+    outline = Outline,
+    outlineVariant = OutlineVariant
 )
+
+// Legacy compatibility
+private val DarkColorScheme = EditorialDarkColorScheme
+private val LightColorScheme = EditorialLightColorScheme
+
+// =============================================================================
+// THEME COMPOSABLE
+// =============================================================================
 
 @Composable
 fun FintechTheme(
@@ -69,22 +140,22 @@ fun FintechTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> EditorialDarkColorScheme
+        else -> EditorialLightColorScheme
     }
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.statusBarColor = Primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = EditorialTypography,
         content = content
     )
 }

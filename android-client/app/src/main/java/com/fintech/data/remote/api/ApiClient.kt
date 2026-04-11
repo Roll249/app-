@@ -155,4 +155,37 @@ object NetworkModule {
     fun provideAIApi(retrofit: Retrofit): com.fintech.data.remote.api.services.AIApi {
         return retrofit.create(com.fintech.data.remote.api.services.AIApi::class.java)
     }
+
+    // Services API
+    @Provides
+    @Singleton
+    fun provideServicesApi(retrofit: Retrofit): com.fintech.data.remote.services.ServicesApi {
+        return retrofit.create(com.fintech.data.remote.services.ServicesApi::class.java)
+    }
+
+    // Service Manager
+    @Provides
+    @Singleton
+    fun provideServiceManager(
+        servicesApi: com.fintech.data.remote.services.ServicesApi,
+        preferencesManager: PreferencesManager
+    ): com.fintech.data.remote.services.ServiceManager {
+        return com.fintech.data.remote.services.ServiceManager(servicesApi, preferencesManager)
+    }
+
+    // Market API
+    @Provides
+    @Singleton
+    fun provideMarketApi(retrofit: Retrofit): com.fintech.data.remote.market.MarketApi {
+        return retrofit.create(com.fintech.data.remote.market.MarketApi::class.java)
+    }
+
+    // Market Manager
+    @Provides
+    @Singleton
+    fun provideMarketManager(
+        marketApi: com.fintech.data.remote.market.MarketApi
+    ): com.fintech.data.remote.market.MarketManager {
+        return com.fintech.data.remote.market.MarketManager(marketApi)
+    }
 }

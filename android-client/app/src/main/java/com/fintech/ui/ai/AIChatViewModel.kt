@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AIChatState(
-    val messages: List<ChatMessage> = emptyList(),
+    val messages: List<AIMessage> = emptyList(),
     val inputText: String = "",
     val isTyping: Boolean = false,
     val error: String? = null,
@@ -119,7 +119,7 @@ class AIChatViewModel @Inject constructor(
         }
 
         // Add user message
-        val userMessage = ChatMessage(role = "user", content = text)
+        val userMessage = AIMessage(role = "user", content = text)
         _state.update {
             it.copy(
                 messages = it.messages + userMessage,
@@ -131,15 +131,10 @@ class AIChatViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                // Build messages for API
-                val messages = _state.value.messages.map {
-                    AIMessage(role = it.role, content = it.content)
-                }
-
                 // Call backend API
                 val response = aiApi.chat(
                     com.fintech.data.remote.api.services.AIChatRequest(
-                        messages = messages,
+                        messages = _state.value.messages,
                         userContext = buildUserContextString()
                     )
                 )
@@ -147,7 +142,7 @@ class AIChatViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     val aiResponseText = apiResponse?.data?.response ?: "Xin lỗi, tôi không nhận được phản hồi."
-                    val aiMessage = ChatMessage(role = "assistant", content = aiResponseText)
+                    val aiMessage = AIMessage(role = "assistant", content = aiResponseText)
 
                     _state.update {
                         it.copy(
@@ -158,7 +153,7 @@ class AIChatViewModel @Inject constructor(
 
                     saveChatLog()
                 } else {
-                    val errorMessage = ChatMessage(
+                    val errorMessage = AIMessage(
                         role = "assistant",
                         content = "Xin lỗi, tôi đang gặp sự cố. Vui lòng thử lại sau.\n\nLỗi: ${response.message()}"
                     )
@@ -171,7 +166,7 @@ class AIChatViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                val errorMessage = ChatMessage(
+                val errorMessage = AIMessage(
                     role = "assistant",
                     content = "Đã xảy ra lỗi: ${e.message}"
                 )
@@ -189,13 +184,10 @@ class AIChatViewModel @Inject constructor(
     private fun saveChatLog() {
         viewModelScope.launch {
             try {
-                val messages = _state.value.messages.map {
-                    AIMessage(role = it.role, content = it.content)
-                }
                 aiApi.saveChatLog(
                     com.fintech.data.remote.api.services.AISaveLogRequest(
                         sessionId = sessionId,
-                        messages = messages
+                        messages = _state.value.messages
                     )
                 )
             } catch (e: Exception) {

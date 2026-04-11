@@ -20,6 +20,8 @@ fun ProfileScreen(
     onNavigateToNotificationSettings: () -> Unit,
     onNavigateToSecuritySettings: () -> Unit,
     onNavigateToAbout: () -> Unit,
+    onNavigateToServices: () -> Unit,
+    onNavigateToMarket: () -> Unit,
     onLogout: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -97,6 +99,20 @@ fun ProfileScreen(
                         title = "Bảo mật",
                         subtitle = "Đổi mật khẩu, bảo mật 2 lớp",
                         onClick = onNavigateToSecuritySettings
+                    )
+                    HorizontalDivider()
+                    ProfileMenuItem(
+                        icon = Icons.Default.Cloud,
+                        title = "Dịch vụ",
+                        subtitle = "Quản lý dịch vụ bên ngoài",
+                        onClick = onNavigateToServices
+                    )
+                    HorizontalDivider()
+                    ProfileMenuItem(
+                        icon = Icons.Default.ShowChart,
+                        title = "Thị trường",
+                        subtitle = "Tỷ giá, vàng, chứng khoán",
+                        onClick = onNavigateToMarket
                     )
                     HorizontalDivider()
                     ProfileMenuItem(

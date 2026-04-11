@@ -74,7 +74,8 @@ fun TransactionListScreen(
                         description = transaction.description,
                         amount = transaction.amount,
                         type = transaction.type.name,
-                        date = formatDate(transaction.date)
+                        date = formatDate(transaction.date),
+                        onClick = {}
                     )
                 }
             }

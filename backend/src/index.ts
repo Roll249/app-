@@ -15,7 +15,11 @@ import { qrRoutes } from './routes/qr.js';
 import { reportRoutes } from './routes/report.js';
 import { demoRoutes } from './routes/demo.js';
 import { aiRoutes } from './routes/ai.js';
+import { servicesRoutes } from './routes/services.js';
+import { marketRoutes } from './routes/market.js';
+import { investmentRoutes } from './routes/investment.js';
 import { initDatabase } from './utils/db.js';
+import { getServiceRegistry } from './services/index.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -49,12 +53,19 @@ async function start() {
 
   await initDatabase();
 
+  // Initialize services
+  const serviceRegistry = getServiceRegistry(fastify.log);
+  await serviceRegistry.initialize();
+
   fastify.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }));
 
   // Public routes
   await fastify.register(authRoutes, { prefix: '/api/v1/auth' });
   await fastify.register(demoRoutes, { prefix: '/api/v1/demo' });
   await fastify.register(aiRoutes, { prefix: '/api/v1/ai' });
+  await fastify.register(servicesRoutes, { prefix: '/api/v1/services' });
+  await fastify.register(marketRoutes, { prefix: '/api/v1/market' });
+  await fastify.register(investmentRoutes, { prefix: '/api/v1/investments' });
 
   // Public AI status endpoint (no auth needed)
   fastify.get('/api/v1/ai/status', async (request: any, reply: any) => {

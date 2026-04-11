@@ -50,6 +50,8 @@ sealed class Screen(val route: String) {
     object SecuritySettings : Screen("security_settings")
     object About : Screen("about")
     object AIChat : Screen("ai_chat")
+    object Services : Screen("services")
+    object Market : Screen("market")
 }
 
 /**
