@@ -144,7 +144,7 @@ fun AIChatScreen(
                 Surface(
                     modifier = Modifier
                         .clip(RoundedCornerShape(24.dp)),
-                    color = SecondaryContainer.copy(alpha = 0.3f)
+                    color = PrimaryContainer.copy(alpha = 0.3f)
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -153,7 +153,7 @@ fun AIChatScreen(
                         Icon(
                             Icons.Default.DocumentScanner,
                             contentDescription = null,
-                            tint = Secondary,
+                            tint = OnPrimaryContainer,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -161,7 +161,7 @@ fun AIChatScreen(
                             text = "Scan Bill for Analysis",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Secondary
+                            color = OnPrimaryContainer
                         )
                     }
                 }
@@ -238,7 +238,7 @@ private fun WelcomeMessage() {
                     Icon(
                         Icons.Default.SmartToy,
                         contentDescription = null,
-                        tint = Secondary,
+                        tint = OnSecondaryFixed,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -261,7 +261,7 @@ private fun WelcomeMessage() {
             Text(
                 text = "Tôi có thể giúp bạn:",
                 style = MaterialTheme.typography.bodyMedium,
-                color = OnSurfaceVariant
+                color = OnSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -323,7 +323,7 @@ private fun ChatBubble(message: AIMessage, timestamp: Long = System.currentTimeM
                     Icon(
                         Icons.Default.SmartToy,
                         contentDescription = null,
-                        tint = Secondary,
+                        tint = OnSecondaryFixed,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -332,7 +332,7 @@ private fun ChatBubble(message: AIMessage, timestamp: Long = System.currentTimeM
                     text = "Fina",
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Secondary
+                    color = Primary
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -387,7 +387,7 @@ private fun TypingIndicator() {
             Icon(
                 Icons.Default.SmartToy,
                 contentDescription = null,
-                tint = Secondary,
+                tint = OnSecondaryFixed,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -417,7 +417,7 @@ private fun TypingIndicator() {
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(Secondary.copy(alpha = alpha))
+                            .background(Primary.copy(alpha = alpha))
                     )
                 }
             }

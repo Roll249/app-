@@ -596,7 +596,7 @@ private fun AIChatShortcut(onClick: () -> Unit) {
                     Icon(
                         Icons.Default.SmartToy,
                         contentDescription = null,
-                        tint = Secondary,
+                        tint = OnSecondaryFixed,
                         modifier = Modifier.size(28.dp)
                     )
                 }
