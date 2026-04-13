@@ -250,7 +250,7 @@ Chỉ trả về JSON, không giải thích gì thêm.
     const prompt = `
 Bạn là chuyên gia tư vấn tài chính. Hãy đề xuất cách chia tiền vào các quỹ tiết kiệm.
 
-Thu nhập tháng: ${income.toLong()} VND
+Thu nhập tháng: ${income} VND
 Chi tiêu hiện tại:
 ${expensesJson}
 

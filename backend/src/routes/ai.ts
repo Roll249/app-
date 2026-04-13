@@ -5,10 +5,8 @@
  */
 import { query } from '../utils/db.js';
 import { getServiceRegistry } from '../services/index.js';
-import { ChatMessage } from '../services/ai/AIService.js';
 
-// Types
-interface ChatMessage {
+export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }

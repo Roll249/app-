@@ -18,6 +18,7 @@ RUN npm ci
 # 复制配置文件和源代码
 COPY tsconfig.json ./
 COPY src ./src
+COPY package*.json ./
 
 # 编译 TypeScript
 RUN npm run build
