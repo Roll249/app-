@@ -48,6 +48,9 @@ interface AccountApi {
     @GET("accounts")
     suspend fun getAccounts(): Response<ApiResponse<List<AccountDto>>>
 
+    @GET("accounts/summary")
+    suspend fun getAccountSummary(): Response<ApiResponse<AccountSummaryDto>>
+
     @POST("accounts")
     suspend fun createAccount(@Body request: CreateAccountRequest): Response<ApiResponse<AccountDto>>
 
@@ -147,7 +150,53 @@ interface FundApi {
 
     @DELETE("funds/{id}")
     suspend fun deleteFund(@Path("id") id: String): Response<ApiResponse<Unit>>
+
+    @POST("funds/ai-allocate")
+    suspend fun getAIAllocationSuggestion(
+        @Body request: AIAllocationRequest
+    ): Response<ApiResponse<AIAllocationResponse>>
+
+    @POST("funds/execute-allocation")
+    suspend fun executeAllocation(
+        @Body request: ExecuteAllocationRequest
+    ): Response<ApiResponse<ExecuteAllocationResponse>>
 }
+
+data class AIAllocationRequest(
+    val amount: Double,
+    val description: String? = null
+)
+
+data class AIAllocationResponse(
+    val totalAmount: Double,
+    val allocations: List<AllocationItem>,
+    val totalSavings: Double,
+    val suggestion: String
+)
+
+data class AllocationItem(
+    val fundId: String,
+    val fundName: String,
+    val amount: Double,
+    val reason: String
+)
+
+data class ExecuteAllocationRequest(
+    val allocations: List<AllocationItem>
+)
+
+data class ExecuteAllocationResponse(
+    val totalAllocated: Double,
+    val results: List<AllocationResult>
+)
+
+data class AllocationResult(
+    val fundId: String,
+    val fundName: String,
+    val amount: Double,
+    val newBalance: Double,
+    val transactionId: String
+)
 
 /**
  * Budget API Service

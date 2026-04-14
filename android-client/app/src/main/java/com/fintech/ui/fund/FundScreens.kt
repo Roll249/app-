@@ -21,13 +21,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.fintech.domain.model.Fund
 import com.fintech.ui.components.EmptyStateView
 import com.fintech.ui.components.LoadingIndicator
 import com.fintech.ui.theme.IncomeGreen
 import com.fintech.ui.theme.Primary
 import java.text.NumberFormat
 import java.util.Locale
+
+// Use Fund from ui.fund instead of domain.model
+private typealias FundModel = Fund
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -337,7 +339,7 @@ fun AddFundScreen(
             // Nút tạo
             Button(
                 onClick = {
-                    val target = targetAmount.toLongOrNull() ?: 0L
+                    val target = targetAmount.toDoubleOrNull() ?: 0.0
                     viewModel.createFund(name, target, selectedIcon, selectedColor)
                     onFundCreated()
                 },
@@ -587,7 +589,7 @@ fun FundDetailScreen(
                     onClick = {
                         val amount = depositAmount.toLongOrNull() ?: 0L
                         if (amount > 0) {
-                            viewModel.depositToFund(fundId, amount)
+                            viewModel.contribute(fundId, amount.toDouble())
                             depositAmount = ""
                             showDepositDialog = false
                         }

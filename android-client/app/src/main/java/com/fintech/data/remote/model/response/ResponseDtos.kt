@@ -43,6 +43,14 @@ data class AccountDto(
     @SerializedName("updatedAt") val updatedAt: String
 )
 
+data class AccountSummaryDto(
+    @SerializedName("totalBalance") val totalBalance: Double,
+    @SerializedName("accountCount") val accountCount: Int,
+    @SerializedName("linkedBalance") val linkedBalance: Double,
+    @SerializedName("cashBalance") val cashBalance: Double,
+    @SerializedName("currency") val currency: String
+)
+
 /**
  * Transaction DTOs
  */

@@ -124,7 +124,7 @@ export async function initDatabase(): Promise<void> {
   await query(`
     CREATE TABLE IF NOT EXISTS funds (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+      user_id VARCHAR(100) NOT NULL,
       name VARCHAR(255) NOT NULL,
       icon VARCHAR(100),
       color VARCHAR(20),

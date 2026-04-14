@@ -241,37 +241,47 @@ Chỉ trả về JSON, không giải thích gì thêm.
 
   async suggestFundAllocation(
     income: number,
-    expenses: Record<string, number>,
+    monthlyExpenses: number,
+    availableAmount: number,
     funds: Array<{ id: string; name: string; currentAmount: number; targetAmount: number }>
   ): Promise<any> {
-    const fundsJson = funds.map(f => `- ${f.name}: ${f.currentAmount} / ${f.targetAmount}`).join('\n');
-    const expensesJson = Object.entries(expenses).map(([k, v]) => `- ${k}: ${v}`).join('\n');
+    const fundsJson = funds.length > 0 
+      ? funds.map(f => `- ${f.name}: hiện tại ${f.currentAmount.toLocaleString()} / mục tiêu ${f.targetAmount.toLocaleString()} VND`).join('\n')
+      : 'Chưa có quỹ tiết kiệm nào';
+
+    const remaining = income - monthlyExpenses;
 
     const prompt = `
 Bạn là chuyên gia tư vấn tài chính. Hãy đề xuất cách chia tiền vào các quỹ tiết kiệm.
 
-Thu nhập tháng: ${income} VND
-Chi tiêu hiện tại:
-${expensesJson}
+SỐ TIỀN CẦN CHIA: ${availableAmount.toLocaleString()} VND
+Thu nhập tháng: ${income.toLocaleString()} VND
+Chi tiêu tháng: ${monthlyExpenses.toLocaleString()} VND
+Số dư khả dụng: ${remaining.toLocaleString()} VND
 
 Các quỹ hiện tại:
 ${fundsJson}
 
-Hãy trả về JSON:
+Hãy phân tích và đề xuất CHÍNH XÁC số tiền cần nạp vào MỖI quỹ sao cho:
+1. Ưu tiên quỹ gần đạt mục tiêu nhất
+2. Quỹ khẩn cấp nên được ưu tiên nếu chưa đạt 30% mục tiêu
+3. Tổng số tiền chia không vượt quá số tiền cần chia
+
+Trả về JSON:
 {
   "totalSavings": số tiền có thể tiết kiệm (number),
   "allocations": [
     {
-      "fundId": "id của quỹ",
+      "fundId": "id của quỹ trong danh sách trên",
       "fundName": "tên quỹ",
       "amount": số tiền nạp vào (number),
-      "reason": "lý do"
+      "reason": "lý do ngắn gọn"
     }
   ],
-  "suggestion": "lời khuyên ngắn gọn"
+  "suggestion": "lời khuyên ngắn gọn 1-2 câu"
 }
 
-Chỉ trả về JSON.
+CHỈ trả về JSON, không giải thích gì thêm.
     `.trim();
 
     const response = await this.chat({

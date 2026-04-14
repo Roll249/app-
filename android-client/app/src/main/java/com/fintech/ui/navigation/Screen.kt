@@ -29,6 +29,7 @@ sealed class Screen(val route: String) {
         fun createRoute(fundId: String) = "fund/$fundId"
     }
     object AddFund : Screen("add_fund")
+    object FundConfiguration : Screen("fund_configuration")
     object BudgetList : Screen("budgets")
     object BankList : Screen("banks")
     object BankDetail : Screen("bank/{bankCode}") {

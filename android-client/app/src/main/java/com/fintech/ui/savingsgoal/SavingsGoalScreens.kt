@@ -30,6 +30,8 @@ fun SavingsGoalListScreen(
     viewModel: SavingsGoalViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    var editingGoal by remember { mutableStateOf<SavingsGoal?>(null) }
+    var deletingGoal by remember { mutableStateOf<SavingsGoal?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadGoals()
@@ -103,18 +105,57 @@ fun SavingsGoalListScreen(
                         goal = goal,
                         onContribute = { amount ->
                             viewModel.contribute(goal.id, amount)
-                        }
+                        },
+                        onEdit = { editingGoal = goal },
+                        onDelete = { deletingGoal = goal }
                     )
                 }
             }
         }
+    }
+
+    // Edit Dialog
+    editingGoal?.let { goal ->
+        EditSavingsGoalDialog(
+            goal = goal,
+            onDismiss = { editingGoal = null },
+            onConfirm = { _, _, _, _ ->
+                editingGoal = null
+            }
+        )
+    }
+
+    // Delete Confirmation
+    deletingGoal?.let { goal ->
+        AlertDialog(
+            onDismissRequest = { deletingGoal = null },
+            title = { Text("Xóa mục tiêu") },
+            text = { Text("Bạn có chắc muốn xóa mục tiêu \"${goal.name}\"?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteGoal(goal.id)
+                        deletingGoal = null
+                    }
+                ) {
+                    Text("Xóa", color = Error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deletingGoal = null }) {
+                    Text("Hủy")
+                }
+            }
+        )
     }
 }
 
 @Composable
 private fun SavingsGoalCard(
     goal: SavingsGoal,
-    onContribute: (Double) -> Unit
+    onContribute: (Double) -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
 ) {
     var showContributeDialog by remember { mutableStateOf(false) }
     val progress = (goal.currentAmount / goal.targetAmount).coerceIn(0.0, 1.0)
@@ -147,25 +188,22 @@ private fun SavingsGoalCard(
                         color = OnSurfaceVariant
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Primary.copy(alpha = 0.1f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Savings,
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(20.dp)
-                    )
+                Row {
+                    TextButton(onClick = onEdit, modifier = Modifier.height(32.dp)) {
+                        Icon(Icons.Default.Edit, contentDescription = "Sửa", modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Sửa", style = MaterialTheme.typography.labelSmall)
+                    }
+                    TextButton(onClick = onDelete, modifier = Modifier.height(32.dp)) {
+                        Icon(Icons.Default.Delete, contentDescription = "Xóa", modifier = Modifier.size(16.dp), tint = Error)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Xóa", style = MaterialTheme.typography.labelSmall, color = Error)
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Progress
             LinearProgressIndicator(
                 progress = { progress.toFloat() },
                 modifier = Modifier
@@ -275,6 +313,88 @@ private fun ContributeDialog(
     )
 }
 
+@Composable
+private fun EditSavingsGoalDialog(
+    goal: SavingsGoal,
+    onDismiss: () -> Unit,
+    onConfirm: (String, Double, Double, String) -> Unit
+) {
+    var name by remember { mutableStateOf(goal.name) }
+    var targetAmount by remember { mutableStateOf(goal.targetAmount.toLong().toString()) }
+    var amountPerPeriod by remember { mutableStateOf(goal.amountPerPeriod.toLong().toString()) }
+    var selectedPeriod by remember { mutableStateOf(goal.period) }
+
+    val periodOptions = listOf(
+        "MONTHLY" to "Hàng tháng",
+        "QUARTERLY" to "Hàng quý",
+        "YEARLY" to "Hàng năm"
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Chỉnh sửa mục tiêu") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Tên mục tiêu") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                OutlinedTextField(
+                    value = targetAmount,
+                    onValueChange = { targetAmount = it.filter { c -> c.isDigit() } },
+                    label = { Text("Số tiền mục tiêu (VNĐ)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                Text("Chu kỳ", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    periodOptions.forEach { (value, label) ->
+                        FilterChip(
+                            selected = selectedPeriod == value,
+                            onClick = { selectedPeriod = value },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+
+                OutlinedTextField(
+                    value = amountPerPeriod,
+                    onValueChange = { amountPerPeriod = it.filter { c -> c.isDigit() } },
+                    label = { Text("Số tiền mỗi kỳ (VNĐ)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val target = targetAmount.toDoubleOrNull() ?: 0.0
+                    val perPeriod = amountPerPeriod.toDoubleOrNull() ?: 0.0
+                    if (name.isNotBlank() && target > 0) {
+                        onConfirm(name, target, perPeriod, selectedPeriod)
+                    }
+                },
+                enabled = name.isNotBlank() && (targetAmount.toDoubleOrNull() ?: 0.0) > 0
+            ) {
+                Text("Lưu")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Hủy")
+            }
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSavingsGoalScreen(
@@ -333,7 +453,8 @@ fun AddSavingsGoalScreen(
                 onValueChange = { name = it },
                 label = { Text("Tên mục tiêu") },
                 placeholder = { Text("VD: Mua xe máy mới") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
             OutlinedTextField(
@@ -342,10 +463,10 @@ fun AddSavingsGoalScreen(
                 label = { Text("Số tiền mục tiêu (VNĐ)") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIcon = { Icon(Icons.Default.AttachMoney, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
-            // Period selector
             Text(
                 text = "Chu kỳ tiết kiệm",
                 style = MaterialTheme.typography.labelMedium,
@@ -373,7 +494,8 @@ fun AddSavingsGoalScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 leadingIcon = { Icon(Icons.Default.Savings, contentDescription = null) },
                 supportingText = { Text("Số tiền bạn muốn tiết kiệm mỗi ${periodOptions.find { it.first == selectedPeriod }?.second?.lowercase()}") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
         }
     }

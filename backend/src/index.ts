@@ -74,6 +74,9 @@ async function start() {
   // Account routes - public for demo mode, protected for authenticated users
   await fastify.register(accountRoutes, { prefix: '/api/v1/accounts' });
 
+  // Fund routes - public for demo mode
+  await fastify.register(fundRoutes, { prefix: '/api/v1/funds' });
+
   // Savings goals - public for demo mode
   await fastify.register(savingsGoalRoutes, { prefix: '/api/v1/savings-goals' });
 
@@ -127,10 +130,9 @@ async function start() {
   fastify.register(async (app) => {
     app.addHook('preHandler', fastify.authenticate);
     await app.register(userRoutes, { prefix: '/api/v1/users' });
-    // Transaction and Account routes are public to support demo mode
+    // Category, Bank, Budget, QR, Report routes are protected
     await app.register(categoryRoutes, { prefix: '/api/v1/categories' });
     await app.register(bankRoutes, { prefix: '/api/v1/banks' });
-    await app.register(fundRoutes, { prefix: '/api/v1/funds' });
     await app.register(budgetRoutes, { prefix: '/api/v1/budgets' });
     await app.register(qrRoutes, { prefix: '/api/v1/qr' });
     await app.register(reportRoutes, { prefix: '/api/v1/reports' });

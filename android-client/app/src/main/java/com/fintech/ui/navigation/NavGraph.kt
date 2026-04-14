@@ -25,6 +25,8 @@ import com.fintech.ui.transaction.TransactionListScreen
 import com.fintech.ui.transaction.AddTransactionScreen
 import com.fintech.ui.fund.FundListScreen
 import com.fintech.ui.fund.AddFundScreen
+import com.fintech.ui.fund.FundConfigurationScreen
+import com.fintech.ui.fund.AddIncomeScreen
 import com.fintech.ui.bank.BankListScreen
 import com.fintech.ui.bank.BankDetailScreen
 import com.fintech.ui.bank.LinkBankScreen
@@ -147,6 +149,9 @@ fun AppNavigation(
                     },
                     onNavigateToOptimize = {
                         navController.navigate(Screen.AIChat.createRoute(autoOptimize = true))
+                    },
+                    onNavigateToFundConfig = {
+                        navController.navigate(Screen.FundConfiguration.route)
                     }
                 )
             }
@@ -217,6 +222,15 @@ fun AppNavigation(
                 AddFundScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onFundCreated = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.FundConfiguration.route) {
+                FundConfigurationScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToLinkedAccounts = {
+                        navController.navigate(Screen.BankList.route)
+                    }
                 )
             }
 

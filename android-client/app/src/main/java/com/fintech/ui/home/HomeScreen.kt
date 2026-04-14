@@ -37,7 +37,8 @@ fun HomeScreen(
     onNavigateToQRScan: () -> Unit,
     onNavigateToTransfer: () -> Unit,
     onNavigateToAI: () -> Unit = {},
-    onNavigateToOptimize: () -> Unit = {}
+    onNavigateToOptimize: () -> Unit = {},
+    onNavigateToFundConfig: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -119,7 +120,7 @@ fun HomeScreen(
             item {
                 QuickActionsGrid(
                     onSend = onNavigateToTransfer,
-                    onReceive = onNavigateToAccounts,
+                    onFundConfig = onNavigateToFundConfig,
                     onQRScan = onNavigateToQRScan,
                     onBillPay = onNavigateToAddTransaction
                 )
@@ -401,7 +402,7 @@ private fun GrowthTargetCard(
 @Composable
 private fun QuickActionsGrid(
     onSend: () -> Unit,
-    onReceive: () -> Unit,
+    onFundConfig: () -> Unit,
     onQRScan: () -> Unit,
     onBillPay: () -> Unit
 ) {
@@ -418,11 +419,11 @@ private fun QuickActionsGrid(
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
-            icon = Icons.Default.Download,
-            label = "Receive",
+            icon = Icons.Default.AccountBalanceWallet,
+            label = "Quỹ",
             iconBackgroundColor = Secondary,
             iconColor = OnSecondary,
-            onClick = onReceive,
+            onClick = onFundConfig,
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(

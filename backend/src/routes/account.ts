@@ -31,6 +31,36 @@ export async function accountRoutes(fastify: any) {
     }
   });
 
+  // Get total balance summary
+  fastify.get('/summary', async (request: any, reply: any) => {
+    const userId = getUserId(request);
+    try {
+      const result = await queryOne(
+        `SELECT 
+          COALESCE(SUM(CASE WHEN include_in_total = true THEN current_balance ELSE 0 END), 0) as total_balance,
+          COUNT(*) as account_count,
+          COALESCE(SUM(CASE WHEN type = 'BANK' AND include_in_total = true THEN current_balance ELSE 0 END), 0) as linked_balance,
+          COALESCE(SUM(CASE WHEN type = 'CASH' AND include_in_total = true THEN current_balance ELSE 0 END), 0) as cash_balance
+        FROM accounts WHERE user_id = $1 AND is_active = true`,
+        [userId]
+      );
+
+      return reply.send({
+        success: true,
+        data: {
+          totalBalance: parseFloat(result.total_balance || '0'),
+          accountCount: parseInt(result.account_count || '0'),
+          linkedBalance: parseFloat(result.linked_balance || '0'),
+          cashBalance: parseFloat(result.cash_balance || '0'),
+          currency: 'VND'
+        }
+      });
+    } catch (error: any) {
+      fastify.log.error(error);
+      return reply.status(500).send({ success: false, message: 'Failed to get balance summary' });
+    }
+  });
+
   // Create account
   fastify.post('/', async (request: any, reply: any) => {
     const { name, type, icon, color, initialBalance, currency, includeInTotal } = request.body;
