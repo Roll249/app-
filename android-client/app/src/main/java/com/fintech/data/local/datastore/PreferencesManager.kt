@@ -117,6 +117,13 @@ class PreferencesManager @Inject constructor(
         }
     }
 
+    // Set current user ID (for demo mode - stores "demo" or actual user ID)
+    suspend fun setCurrentUserId(userId: String) {
+        dataStore.edit { prefs ->
+            prefs[USER_ID] = userId
+        }
+    }
+
     // Clear auth data (logout)
     suspend fun clearAuthData() {
         dataStore.edit { prefs ->

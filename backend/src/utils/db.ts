@@ -105,7 +105,7 @@ export async function initDatabase(): Promise<void> {
   await query(`
     CREATE TABLE IF NOT EXISTS accounts (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+      user_id VARCHAR(100) NOT NULL,
       name VARCHAR(255) NOT NULL,
       type VARCHAR(50) NOT NULL,
       icon VARCHAR(100),
@@ -143,7 +143,7 @@ export async function initDatabase(): Promise<void> {
   await query(`
     CREATE TABLE IF NOT EXISTS transactions (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+      user_id VARCHAR(100) NOT NULL,
       account_id UUID REFERENCES accounts(id),
       category_id UUID,
       type VARCHAR(20) NOT NULL,
@@ -217,6 +217,23 @@ export async function initDatabase(): Promise<void> {
       session_id VARCHAR(100) DEFAULT 'default',
       messages JSONB DEFAULT '[]',
       created_at BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
+    )
+  `);
+
+  await query(`
+    CREATE TABLE IF NOT EXISTS savings_goals (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id VARCHAR(100) NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      target_amount DECIMAL(18,2) NOT NULL,
+      current_amount DECIMAL(18,2) DEFAULT 0,
+      period VARCHAR(20) DEFAULT 'MONTHLY',
+      amount_per_period DECIMAL(18,2) DEFAULT 0,
+      start_date VARCHAR(20),
+      end_date VARCHAR(20),
+      is_active BOOLEAN DEFAULT true,
+      created_at BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT,
+      updated_at BIGINT DEFAULT EXTRACT(EPOCH FROM NOW())::BIGINT
     )
   `);
 

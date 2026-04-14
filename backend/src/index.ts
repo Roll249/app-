@@ -18,6 +18,7 @@ import { aiRoutes } from './routes/ai.js';
 import { servicesRoutes } from './routes/services.js';
 import { marketRoutes } from './routes/market.js';
 import { investmentRoutes } from './routes/investment.js';
+import { savingsGoalRoutes } from './routes/savingsGoal.js';
 import { initDatabase } from './utils/db.js';
 import { getServiceRegistry } from './services/index.js';
 
@@ -66,6 +67,15 @@ async function start() {
   await fastify.register(servicesRoutes, { prefix: '/api/v1/services' });
   await fastify.register(marketRoutes, { prefix: '/api/v1/market' });
   await fastify.register(investmentRoutes, { prefix: '/api/v1/investments' });
+
+  // Transaction routes - public (supports demo mode)
+  await fastify.register(transactionRoutes, { prefix: '/api/v1/transactions' });
+
+  // Account routes - public for demo mode, protected for authenticated users
+  await fastify.register(accountRoutes, { prefix: '/api/v1/accounts' });
+
+  // Savings goals - public for demo mode
+  await fastify.register(savingsGoalRoutes, { prefix: '/api/v1/savings-goals' });
 
   // Public AI status endpoint (no auth needed)
   fastify.get('/api/v1/ai/status', async (request: any, reply: any) => {
@@ -117,8 +127,7 @@ async function start() {
   fastify.register(async (app) => {
     app.addHook('preHandler', fastify.authenticate);
     await app.register(userRoutes, { prefix: '/api/v1/users' });
-    await app.register(accountRoutes, { prefix: '/api/v1/accounts' });
-    await app.register(transactionRoutes, { prefix: '/api/v1/transactions' });
+    // Transaction and Account routes are public to support demo mode
     await app.register(categoryRoutes, { prefix: '/api/v1/categories' });
     await app.register(bankRoutes, { prefix: '/api/v1/banks' });
     await app.register(fundRoutes, { prefix: '/api/v1/funds' });

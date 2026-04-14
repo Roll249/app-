@@ -122,6 +122,22 @@ export async function demoRoutes(fastify: any) {
         [userId]
       );
 
+      // Get monthly income/expense for current month
+      const now = Math.floor(Date.now() / 1000);
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      const startTimestamp = Math.floor(startOfMonth.getTime() / 1000);
+
+      const monthlyIncome: any = await queryOne(
+        `SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = $1 AND type = 'INCOME' AND date >= $2`,
+        [userId, startTimestamp]
+      );
+      const monthlyExpense: any = await queryOne(
+        `SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE user_id = $1 AND type = 'EXPENSE' AND date >= $2`,
+        [userId, startTimestamp]
+      );
+
       return reply.send({
         success: true,
         data: {
@@ -130,7 +146,9 @@ export async function demoRoutes(fastify: any) {
           totalExpense: totalExpense?.total || '0',
           accountsCount: parseInt(accountsCount?.count || '0'),
           bankAccountsCount: parseInt(bankAccountsCount?.count || '0'),
-          fundsCount: parseInt(fundsCount?.count || '0')
+          fundsCount: parseInt(fundsCount?.count || '0'),
+          monthlyIncome: monthlyIncome?.total || '0',
+          monthlyExpense: monthlyExpense?.total || '0'
         }
       });
     } catch (error: any) {

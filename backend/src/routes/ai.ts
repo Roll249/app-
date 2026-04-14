@@ -3,7 +3,7 @@
  * 
  * This module handles all AI-related endpoints using the centralized AIService
  */
-import { query } from '../utils/db.js';
+import { query, queryOne } from '../utils/db.js';
 import { getServiceRegistry } from '../services/index.js';
 
 export interface ChatMessage {
@@ -22,14 +22,17 @@ export async function aiRoutes(fastify: any) {
       const { sessionId, messages } = request.body;
       const userId = request.body.userId || 'demo';
 
-      await query(
-        'DELETE FROM ai_chat_logs WHERE user_id = $1 AND session_id = $2',
-        [userId, sessionId || 'default']
-      );
+      // JSONB expects the value to be a string or proper JSON
+      const messagesJson = JSON.stringify(messages || []);
 
       await query(
-        `INSERT INTO ai_chat_logs (user_id, session_id, messages) VALUES ($1, $2, $3)`,
-        [userId, sessionId || 'default', JSON.stringify(messages)]
+        `INSERT INTO ai_chat_logs (user_id, session_id, messages, created_at)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (user_id) WHERE user_id = $1 DO UPDATE SET
+         session_id = EXCLUDED.session_id,
+         messages = EXCLUDED.messages,
+         created_at = EXCLUDED.created_at`,
+        [userId, sessionId || 'default', messagesJson, Math.floor(Date.now() / 1000)]
       );
 
       return reply.send({ success: true, message: 'Chat log saved' });
@@ -47,20 +50,36 @@ export async function aiRoutes(fastify: any) {
       const userId = request.query.userId || 'demo';
       const sessionId = request.query.sessionId || 'default';
 
-      const result = await query(
+      const result = await queryOne(
         'SELECT * FROM ai_chat_logs WHERE user_id = $1 AND session_id = $2',
         [userId, sessionId]
       );
 
-      if (result.length === 0) {
-        return reply.send({ success: true, data: { messages: [] } });
+      if (!result) {
+        return reply.send({
+          success: true,
+          data: {
+            messages: [],
+            createdAt: null
+          }
+        });
+      }
+
+      // Parse JSONB if it's a string
+      let messages = result.messages;
+      if (typeof messages === 'string') {
+        try {
+          messages = JSON.parse(messages);
+        } catch (e) {
+          messages = [];
+        }
       }
 
       return reply.send({
         success: true,
         data: {
-          messages: result[0].messages || [],
-          createdAt: result[0].created_at
+          messages: messages || [],
+          createdAt: result.created_at ? new Date(result.created_at * 1000).toISOString() : null
         }
       });
     } catch (error: any) {

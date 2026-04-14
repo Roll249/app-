@@ -13,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.fintech.ui.auth.LoginScreen
 import com.fintech.ui.auth.RegisterScreen
 import com.fintech.ui.home.HomeScreen
@@ -142,6 +144,9 @@ fun AppNavigation(
                     },
                     onNavigateToAI = {
                         navController.navigate(Screen.AIChat.route)
+                    },
+                    onNavigateToOptimize = {
+                        navController.navigate(Screen.AIChat.createRoute(autoOptimize = true))
                     }
                 )
             }
@@ -344,15 +349,20 @@ fun AppNavigation(
                 )
             }
 
-            composable(Screen.AIChat.route) {
+            composable(
+                route = "ai_chat?autoOptimize={autoOptimize}",
+                deepLinks = listOf(navDeepLink { uriPattern = "fintech://ai_chat?autoOptimize={autoOptimize}" })
+            ) { backStackEntry ->
+                val autoOptimize = backStackEntry.arguments?.getString("autoOptimize")?.toBoolean() ?: false
                 if (isLoggedIn) {
                     AIChatScreen(
-                        onNavigateBack = { navController.popBackStack() }
+                        onNavigateBack = { navController.popBackStack() },
+                        autoOptimizePortfolio = autoOptimize
                     )
                 } else {
                     LaunchedEffect(Unit) {
                         navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.AIChat.route) { inclusive = true }
+                            popUpTo("ai_chat") { inclusive = true }
                         }
                     }
                 }
@@ -384,6 +394,20 @@ fun AppNavigation(
                         }
                     }
                 }
+            }
+
+            composable(Screen.SavingsGoals.route) {
+                com.fintech.ui.savingsgoal.SavingsGoalListScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onAddGoal = { navController.navigate(Screen.AddSavingsGoal.route) }
+                )
+            }
+
+            composable(Screen.AddSavingsGoal.route) {
+                com.fintech.ui.savingsgoal.AddSavingsGoalScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onGoalCreated = { navController.popBackStack() }
+                )
             }
         }
     }

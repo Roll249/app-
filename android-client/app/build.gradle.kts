@@ -22,8 +22,11 @@ android {
             useSupportLibrary = true
         }
 
-        // API Base URL
-        buildConfigField("String", "BASE_URL", "\"https://acrobat-equate-emphasize.ngrok-free.dev/api/v1/\"")
+        // API Base URL - Change this to your backend URL
+        // For Android Emulator: http://10.0.2.2:3000/api/v1/
+        // For localhost: http://localhost:3000/api/v1/
+        // For ngrok: https://your-ngrok-url.ngrok-free.app/api/v1/
+        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000/api/v1/\"")
     }
 
     buildTypes {

@@ -1,13 +1,17 @@
 package com.fintech.ui.ai
 
+import android.Manifest
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -18,20 +22,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fintech.data.remote.api.services.AIMessage
 import com.fintech.ui.theme.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun AIChatScreen(
     onNavigateBack: () -> Unit,
+    autoOptimizePortfolio: Boolean = false,
     viewModel: AIChatViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val listState = rememberLazyListState()
+    val focusManager = LocalFocusManager.current
+
+    // Auto-trigger portfolio optimization on first composition
+    LaunchedEffect(autoOptimizePortfolio) {
+        if (autoOptimizePortfolio) {
+            // Small delay to ensure AI is ready
+            kotlinx.coroutines.delay(500)
+            viewModel.autoSendPortfolioOptimization()
+        }
+    }
+
+    // Camera permission
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
     LaunchedEffect(state.messages.size) {
         if (state.messages.isNotEmpty()) {
@@ -67,10 +91,10 @@ fun AIChatScreen(
                                 color = Primary
                             )
                             Text(
-                                text = "AI Financial Curator",
+                                text = if (state.isAIOnline) "Online" else "Offline",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Medium,
-                                color = Secondary
+                                color = if (state.isAIOnline) Secondary else Error
                             )
                         }
                     }
@@ -81,19 +105,8 @@ fun AIChatScreen(
                     }
                 },
                 actions = {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(SurfaceContainerHigh),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = null,
-                            tint = OnSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
-                        )
+                    IconButton(onClick = { viewModel.refreshAIStatus() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = Primary)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                 },
@@ -120,7 +133,11 @@ fun AIChatScreen(
             ) {
                 // Welcome message
                 item {
-                    WelcomeMessage()
+                    WelcomeMessage(
+                        onFeatureClick = { feature ->
+                            viewModel.updateInputText(feature)
+                        }
+                    )
                 }
 
                 items(state.messages) { message ->
@@ -130,6 +147,22 @@ fun AIChatScreen(
                 if (state.isTyping) {
                     item {
                         TypingIndicator()
+                    }
+                }
+
+                // Error message
+                state.error?.let { error ->
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = ErrorContainer)
+                        ) {
+                            Text(
+                                text = error,
+                                modifier = Modifier.padding(16.dp),
+                                color = OnErrorContainer
+                            )
+                        }
                     }
                 }
             }
@@ -143,7 +176,15 @@ fun AIChatScreen(
             ) {
                 Surface(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(24.dp)),
+                        .clip(RoundedCornerShape(24.dp))
+                        .clickable {
+                            if (cameraPermissionState.status.isGranted) {
+                                // TODO: Open camera scanner
+                                viewModel.updateInputText("Phân tích hóa đơn từ camera")
+                            } else {
+                                cameraPermissionState.launchPermissionRequest()
+                            }
+                        },
                     color = PrimaryContainer.copy(alpha = 0.3f)
                 ) {
                     Row(
@@ -153,7 +194,7 @@ fun AIChatScreen(
                         Icon(
                             Icons.Default.DocumentScanner,
                             contentDescription = null,
-                            tint = OnPrimaryContainer,
+                            tint = Primary,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -161,7 +202,7 @@ fun AIChatScreen(
                             text = "Scan Bill for Analysis",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
-                            color = OnPrimaryContainer
+                            color = Primary
                         )
                     }
                 }
@@ -199,17 +240,34 @@ fun AIChatScreen(
                             disabledBorderColor = Color.Transparent
                         ),
                         maxLines = 3,
-                        enabled = !state.isTyping
+                        enabled = !state.isTyping,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                        keyboardActions = KeyboardActions(
+                            onSend = {
+                                if (state.inputText.isNotBlank()) {
+                                    viewModel.sendMessage()
+                                    focusManager.clearFocus()
+                                }
+                            }
+                        )
                     )
 
+                    // Send Button with proper click handling
                     IconButton(
-                        onClick = { viewModel.sendMessage() },
-                        enabled = state.inputText.isNotBlank() && !state.isTyping
+                        onClick = {
+                            if (state.inputText.isNotBlank() && !state.isTyping) {
+                                viewModel.sendMessage()
+                                focusManager.clearFocus()
+                            }
+                        },
+                        enabled = state.inputText.isNotBlank() && !state.isTyping,
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
                             contentDescription = "Send",
-                            tint = if (state.inputText.isNotBlank() && !state.isTyping) Primary else OnSurfaceVariant
+                            tint = if (state.inputText.isNotBlank() && !state.isTyping) Primary else OnSurfaceVariant,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
@@ -219,7 +277,7 @@ fun AIChatScreen(
 }
 
 @Composable
-private fun WelcomeMessage() {
+private fun WelcomeMessage(onFeatureClick: (String) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = SurfaceContainerLowest),
@@ -265,41 +323,69 @@ private fun WelcomeMessage() {
             )
             Spacer(modifier = Modifier.height(12.dp))
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                WelcomeFeatureItem("Chia tiền vào các quỹ tiết kiệm", Icons.Default.Savings)
-                WelcomeFeatureItem("Phân tích chi tiêu hàng tháng", Icons.Default.PieChart)
-                WelcomeFeatureItem("Đưa ra lời khuyên tài chính", Icons.Default.Insights)
-                WelcomeFeatureItem("Trả lời câu hỏi về quản lý tiền bạc", Icons.Default.QuestionAnswer)
+                WelcomeFeatureItem(
+                    "Chia tiền vào các quỹ tiết kiệm",
+                    Icons.Default.Savings,
+                    onClick = { onFeatureClick("Hãy giúp tôi chia tiền tiết kiệm vào các quỹ") }
+                )
+                WelcomeFeatureItem(
+                    "Phân tích chi tiêu hàng tháng",
+                    Icons.Default.PieChart,
+                    onClick = { onFeatureClick("Hãy phân tích chi tiêu của tôi trong tháng này") }
+                )
+                WelcomeFeatureItem(
+                    "Đưa ra lời khuyên tài chính",
+                    Icons.Default.Insights,
+                    onClick = { onFeatureClick("Hãy đưa ra lời khuyên tài chính cho tôi") }
+                )
+                WelcomeFeatureItem(
+                    "Trả lời câu hỏi về quản lý tiền bạc",
+                    Icons.Default.QuestionAnswer,
+                    onClick = { onFeatureClick("Tôi có câu hỏi về quản lý tiền bạc") }
+                )
             }
         }
     }
 }
 
 @Composable
-private fun WelcomeFeatureItem(text: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+private fun WelcomeFeatureItem(
+    text: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick),
+        color = Color.Transparent
     ) {
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)
-                .background(SecondaryContainer.copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = Modifier.padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = Secondary,
-                modifier = Modifier.size(16.dp)
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(SecondaryContainer.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = Secondary,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = OnSurface
             )
         }
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = OnSurface
-        )
     }
 }
 

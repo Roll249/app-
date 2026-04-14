@@ -63,6 +63,12 @@ class GetTransactionsUseCase @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 val transactions: List<TransactionDto>? = response.body()?.data
                 if (transactions != null) {
+                    // Get userId from API response (may be "demo" for demo mode)
+                    val apiUserId = transactions.firstOrNull()?.userId
+                    if (apiUserId != null) {
+                        preferencesManager.setCurrentUserId(apiUserId)
+                    }
+
                     transactionDao.insertAll(transactions.map { dto ->
                         TransactionEntity(
                             id = dto.id,
@@ -98,7 +104,8 @@ class GetTransactionsUseCase @Inject constructor(
  */
 class CreateTransactionUseCase @Inject constructor(
     private val transactionDao: TransactionDao,
-    private val transactionApi: TransactionApi
+    private val transactionApi: TransactionApi,
+    private val preferencesManager: PreferencesManager
 ) {
     suspend operator fun invoke(
         accountId: String,
@@ -128,6 +135,8 @@ class CreateTransactionUseCase @Inject constructor(
 
             if (response.isSuccessful && response.body()?.success == true) {
                 val dto = response.body()?.data!!
+                // Save userId from response for demo mode
+                preferencesManager.setCurrentUserId(dto.userId)
                 val entity = TransactionEntity(
                     id = dto.id,
                     userId = dto.userId,

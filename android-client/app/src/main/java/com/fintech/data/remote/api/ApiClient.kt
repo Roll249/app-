@@ -188,4 +188,11 @@ object NetworkModule {
     ): com.fintech.data.remote.market.MarketManager {
         return com.fintech.data.remote.market.MarketManager(marketApi)
     }
+
+    // Savings Goal API
+    @Provides
+    @Singleton
+    fun provideSavingsGoalApi(retrofit: Retrofit): com.fintech.data.remote.api.services.SavingsGoalApi {
+        return retrofit.create(com.fintech.data.remote.api.services.SavingsGoalApi::class.java)
+    }
 }

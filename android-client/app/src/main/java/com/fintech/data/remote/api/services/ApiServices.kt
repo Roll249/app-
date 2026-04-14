@@ -325,3 +325,67 @@ data class AIChatHistoryResponse(
     val messages: List<AIMessage>?,
     val createdAt: Long?
 )
+
+/**
+ * Savings Goal API Service
+ */
+interface SavingsGoalApi {
+
+    @GET("savings-goals")
+    suspend fun getSavingsGoals(): Response<ApiResponse<List<SavingsGoalDto>>>
+
+    @POST("savings-goals")
+    suspend fun createSavingsGoal(@Body request: CreateSavingsGoalRequest): Response<ApiResponse<SavingsGoalDto>>
+
+    @GET("savings-goals/{id}")
+    suspend fun getSavingsGoal(@Path("id") id: String): Response<ApiResponse<SavingsGoalDto>>
+
+    @PUT("savings-goals/{id}")
+    suspend fun updateSavingsGoal(
+        @Path("id") id: String,
+        @Body request: UpdateSavingsGoalRequest
+    ): Response<ApiResponse<SavingsGoalDto>>
+
+    @DELETE("savings-goals/{id}")
+    suspend fun deleteSavingsGoal(@Path("id") id: String): Response<ApiResponse<Unit>>
+
+    @POST("savings-goals/{id}/contribute")
+    suspend fun contributeToSavingsGoal(
+        @Path("id") id: String,
+        @Body request: ContributeSavingsGoalRequest
+    ): Response<ApiResponse<SavingsGoalDto>>
+}
+
+data class SavingsGoalDto(
+    val id: String,
+    val name: String,
+    val targetAmount: String,
+    val currentAmount: String,
+    val period: String,
+    val amountPerPeriod: String,
+    val progress: Double,
+    val startDate: String?,
+    val endDate: String?,
+    val createdAt: String?
+)
+
+data class CreateSavingsGoalRequest(
+    val name: String,
+    val targetAmount: Double,
+    val amountPerPeriod: Double? = null,
+    val period: String = "MONTHLY",
+    val startDate: String? = null,
+    val endDate: String? = null
+)
+
+data class UpdateSavingsGoalRequest(
+    val name: String? = null,
+    val targetAmount: Double? = null,
+    val currentAmount: Double? = null,
+    val amountPerPeriod: Double? = null,
+    val endDate: String? = null
+)
+
+data class ContributeSavingsGoalRequest(
+    val amount: Double
+)

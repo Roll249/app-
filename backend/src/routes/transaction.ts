@@ -1,10 +1,42 @@
 import { query, queryOne, execute } from '../utils/db.js';
 
 export async function transactionRoutes(fastify: any) {
+
+  // Helper to get user ID (supports demo mode)
+  const getUserId = (request: any): string => {
+    if (request.user?.userId) return request.user.userId;
+    // Demo mode: return 'demo' user
+    return 'demo';
+  };
+
+  // Ensure demo account exists
+  const ensureDemoAccount = async (userId: string): Promise<string> => {
+    if (userId !== 'demo') return userId;
+
+    let account = await queryOne(
+      'SELECT id FROM accounts WHERE user_id = $1 LIMIT 1',
+      [userId]
+    );
+
+    if (!account) {
+      // Create demo account
+      const { v4: uuidv4 } = require('uuid');
+      const accountId = uuidv4();
+      const now = Math.floor(Date.now() / 1000);
+      await execute(
+        `INSERT INTO accounts (id, user_id, name, type, current_balance, currency, icon, color, is_active, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [accountId, userId, 'Demo Account', 'CASH', '100000000', 'VND', 'account_balance_wallet', '#4CAF50', true, now, now]
+      );
+      return accountId;
+    }
+    return account.id;
+  };
+
   // List transactions
   fastify.get('/', async (request: any, reply: any) => {
     const { accountId, categoryId, type, startDate, endDate, page = '1', pageSize = '20' } = request.query;
-    const userId = request.user.userId;
+    const userId = getUserId(request);
     const offset = (parseInt(page as string) - 1) * parseInt(pageSize as string);
 
     try {
@@ -54,24 +86,37 @@ export async function transactionRoutes(fastify: any) {
 
   // Create transaction
   fastify.post('/', async (request: any, reply: any) => {
-    const { accountId, categoryId, type, amount, currency, description, note, date, sourceType } = request.body;
-    const userId = request.user.userId;
+    const { accountId: reqAccountId, categoryId, type, amount, currency, description, note, date, sourceType } = request.body;
+    const userId = getUserId(request);
     const now = Math.floor(Date.now() / 1000);
     const { v4: uuidv4 } = require('uuid');
     const id = uuidv4();
 
-    try {
-      const account: any = await queryOne('SELECT * FROM accounts WHERE id = $1 AND user_id = $2', [accountId, userId]);
-      if (!account) return reply.status(404).send({ success: false, message: 'Account not found' });
+    fastify.log.info(`[Transaction] Creating transaction for user: ${userId}, accountId: ${reqAccountId}`);
 
-      const balance = parseFloat(account.current_balance);
+    try {
+      // Get or create account
+      let accountId = reqAccountId;
+      if (!accountId || accountId === 'default') {
+        accountId = await ensureDemoAccount(userId);
+        fastify.log.info(`[Transaction] Using demo account: ${accountId}`);
+      }
+
+      const account: any = await queryOne('SELECT * FROM accounts WHERE id = $1', [accountId]);
+      if (!account) {
+        fastify.log.error(`[Transaction] Account not found: ${accountId}`);
+        return reply.status(400).send({ success: false, message: 'Account not found' });
+      }
+
+      const balance = parseFloat(account.current_balance || '0');
       const amt = parseFloat(amount);
       const newBalance = type === 'INCOME' ? balance + amt : balance - amt;
+      fastify.log.info(`[Transaction] Balance: ${balance}, Amount: ${amt}, New Balance: ${newBalance}`);
 
       await execute(
         `INSERT INTO transactions (id, user_id, account_id, category_id, type, amount, currency, description, note, date, source_type, reference_id, created_at, updated_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $13)`,
-        [id, userId, accountId, categoryId || null, type, amount, currency || 'VND', description || null, note || null, date || now, sourceType || null, `TXN_${id}`, now]
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+        [id, userId, accountId, categoryId || null, type, amount, currency || 'VND', description || null, note || null, date || now, sourceType || null, `TXN_${id}`, now, now]
       );
 
       await execute('UPDATE accounts SET current_balance = $1, updated_at = $2 WHERE id = $3', [newBalance, now, accountId]);
@@ -81,6 +126,8 @@ export async function transactionRoutes(fastify: any) {
          FROM transactions t LEFT JOIN accounts a ON t.account_id = a.id LEFT JOIN categories c ON t.category_id = c.id
          WHERE t.id = $1`, [id]
       );
+
+      fastify.log.info(`[Transaction] Created successfully: ${id}`);
 
       return reply.status(201).send({
         success: true,
@@ -93,8 +140,8 @@ export async function transactionRoutes(fastify: any) {
         }
       });
     } catch (error: any) {
-      fastify.log.error(error);
-      return reply.status(500).send({ success: false, message: 'Failed to create transaction' });
+      fastify.log.error(`[Transaction] Error: ${error.message}`, error.stack);
+      return reply.status(500).send({ success: false, message: `Failed to create transaction: ${error.message}` });
     }
   });
 

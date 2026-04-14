@@ -1,12 +1,19 @@
 import { query, queryOne, execute } from '../utils/db.js';
 
 export async function accountRoutes(fastify: any) {
+  // Helper to get user ID (supports demo mode)
+  const getUserId = (request: any): string => {
+    if (request.user?.userId) return request.user.userId;
+    return 'demo';
+  };
+
   // List accounts
   fastify.get('/', async (request: any, reply: any) => {
+    const userId = getUserId(request);
     try {
       const accounts = await query(
         'SELECT * FROM accounts WHERE user_id = $1 AND is_active = true ORDER BY created_at DESC',
-        [request.user.userId]
+        [userId]
       );
 
       return reply.send({
@@ -27,7 +34,7 @@ export async function accountRoutes(fastify: any) {
   // Create account
   fastify.post('/', async (request: any, reply: any) => {
     const { name, type, icon, color, initialBalance, currency, includeInTotal } = request.body;
-    const userId = request.user.userId;
+    const userId = getUserId(request);
     const now = Math.floor(Date.now() / 1000);
     const { v4: uuidv4 } = require('uuid');
     const id = uuidv4();
@@ -57,10 +64,11 @@ export async function accountRoutes(fastify: any) {
 
   // Get account by ID
   fastify.get('/:id', async (request: any, reply: any) => {
+    const userId = getUserId(request);
     try {
       const account = await queryOne(
         'SELECT * FROM accounts WHERE id = $1 AND user_id = $2',
-        [request.params.id, request.user.userId]
+        [request.params.id, userId]
       );
       if (!account) return reply.status(404).send({ success: false, message: 'Account not found' });
 
@@ -81,10 +89,11 @@ export async function accountRoutes(fastify: any) {
 
   // Delete account
   fastify.delete('/:id', async (request: any, reply: any) => {
+    const userId = getUserId(request);
     try {
       const result = await execute(
         'UPDATE accounts SET is_active = false, updated_at = $1 WHERE id = $2 AND user_id = $3',
-        [Math.floor(Date.now() / 1000), request.params.id, request.user.userId]
+        [Math.floor(Date.now() / 1000), request.params.id, userId]
       );
       if (result === 0) return reply.status(404).send({ success: false, message: 'Account not found' });
       return reply.send({ success: true, message: 'Account deleted' });

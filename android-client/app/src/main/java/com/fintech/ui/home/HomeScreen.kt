@@ -36,7 +36,8 @@ fun HomeScreen(
     onNavigateToQRGenerate: () -> Unit,
     onNavigateToQRScan: () -> Unit,
     onNavigateToTransfer: () -> Unit,
-    onNavigateToAI: () -> Unit = {}
+    onNavigateToAI: () -> Unit = {},
+    onNavigateToOptimize: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -109,7 +110,8 @@ fun HomeScreen(
             item {
                 GrowthTargetCard(
                     currentAmount = state.totalBalance,
-                    goalAmount = 200000.0
+                    goalAmount = 200000.0,
+                    onOptimize = onNavigateToOptimize
                 )
             }
 
@@ -296,7 +298,8 @@ private fun IncomeExpensePill(
 @Composable
 private fun GrowthTargetCard(
     currentAmount: Double,
-    goalAmount: Double
+    goalAmount: Double,
+    onOptimize: () -> Unit
 ) {
     val progress = (currentAmount / goalAmount).coerceIn(0.0, 1.0)
 
@@ -372,7 +375,7 @@ private fun GrowthTargetCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { },
+                onClick = onOptimize,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Secondary,

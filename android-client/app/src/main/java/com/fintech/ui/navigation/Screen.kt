@@ -49,9 +49,13 @@ sealed class Screen(val route: String) {
     object NotificationSettings : Screen("notification_settings")
     object SecuritySettings : Screen("security_settings")
     object About : Screen("about")
-    object AIChat : Screen("ai_chat")
+    object AIChat : Screen("ai_chat?autoOptimize={autoOptimize}") {
+        fun createRoute(autoOptimize: Boolean = false) = "ai_chat?autoOptimize=$autoOptimize"
+    }
     object Services : Screen("services")
     object Market : Screen("market")
+    object SavingsGoals : Screen("savings_goals")
+    object AddSavingsGoal : Screen("add_savings_goal")
 }
 
 /**
