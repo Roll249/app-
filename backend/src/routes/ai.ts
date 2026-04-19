@@ -183,10 +183,15 @@ export async function aiRoutes(fastify: any) {
         });
       }
 
+      const monthlyExpenses = Object.values<number>(expenses as Record<string, number>).reduce(
+        (sum, val) => sum + val, 0
+      );
+      const availableAmount = income - monthlyExpenses;
+
       fastify.log.info(`[AI] Generating fund allocation suggestions`);
 
       const aiService = getAIService();
-      const result = await aiService.suggestFundAllocation(income, expenses, funds);
+      const result = await aiService.suggestFundAllocation(income, monthlyExpenses, availableAmount, funds as any);
 
       return reply.send({
         success: true,

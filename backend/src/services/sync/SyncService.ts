@@ -259,13 +259,23 @@ export class SyncService extends BaseService {
   }
 
   private async syncToGoogleDrive(record: any): Promise<void> {
-    // Placeholder for Google Drive sync
-    this.logger.info(`[${this.getName()}] Syncing to Google Drive: ${record.entityType}`);
+    // STUB: This is a placeholder. To enable Google Drive backup:
+    // 1. Create a Google Cloud project and enable the Drive API
+    // 2. Download OAuth2 service account credentials to GOOGLE_DRIVE_CREDENTIALS_PATH
+    // 3. Set SYNC_PROVIDER=google_drive in backend/.env
+    // 4. Implement actual Google Drive API upload logic here.
+    // See docs/THIRD_PARTY_SERVICES.md for implementation details.
+    this.logger.warn(`[${this.getName()}] [STUB] Would sync to Google Drive: ${record.entityType} (${record.entityId})`);
   }
 
   private async syncToICloud(record: any): Promise<void> {
-    // Placeholder for iCloud sync
-    this.logger.info(`[${this.getName()}] Syncing to iCloud: ${record.entityType}`);
+    // STUB: This is a placeholder. To enable iCloud backup:
+    // 1. Get an Apple Developer Program membership
+    // 2. Set up CloudKit API credentials
+    // 3. Set SYNC_PROVIDER=icloud in backend/.env
+    // 4. Implement actual CloudKit API upload logic here.
+    // See docs/THIRD_PARTY_SERVICES.md for implementation details.
+    this.logger.warn(`[${this.getName()}] [STUB] Would sync to iCloud: ${record.entityType} (${record.entityId})`);
   }
 
   private async syncLocally(record: any): Promise<void> {
@@ -274,7 +284,8 @@ export class SyncService extends BaseService {
   }
 
   private async fetchRemoteChanges(userId: string): Promise<any[]> {
-    // Placeholder - fetch changes from remote provider
+    // STUB: This is a placeholder. Fetching changes from remote cloud providers
+    // is not implemented. Only returns empty array.
     return [];
   }
 

@@ -27,6 +27,12 @@ android {
         // For localhost: http://localhost:3000/api/v1/
         // For ngrok: https://your-ngrok-url.ngrok-free.app/api/v1/
         buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000/api/v1/\"")
+
+        // Ollama AI server URL - must match backend's OLLAMA_URL
+        // For Android Emulator: use 10.0.2.2 to reach host localhost:11434
+        // For physical device: use your Ollama server's local IP (e.g., http://192.168.1.x:11434)
+        // For remote server: https://your-ollama-server.com
+        buildConfigField("String", "OLLAMA_BASE_URL", "\"http://10.0.2.2:11434\"")
     }
 
     buildTypes {

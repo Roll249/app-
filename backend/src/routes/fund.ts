@@ -10,11 +10,14 @@ export async function fundRoutes(fastify: any) {
   // List all funds
   fastify.get('/', async (request: any, reply: any) => {
     const userId = getUserId(request);
+    console.log('[DEBUG] Getting funds for user:', userId);
     try {
+      console.log('[DEBUG] Executing query...');
       const funds = await query(
         'SELECT * FROM funds WHERE user_id = $1 AND is_active = true ORDER BY created_at DESC',
         [userId]
       );
+      console.log('[DEBUG] Query executed, found funds:', funds.length, JSON.stringify(funds));
 
       return reply.send({
         success: true,
@@ -34,8 +37,8 @@ export async function fundRoutes(fastify: any) {
         }))
       });
     } catch (error: any) {
-      fastify.log.error(error);
-      return reply.status(500).send({ success: false, message: 'Failed to get funds' });
+      console.error('[DEBUG] Error getting funds:', error);
+      return reply.status(500).send({ success: false, message: 'Failed to get funds', error: error.message });
     }
   });
 
@@ -115,7 +118,7 @@ export async function fundRoutes(fastify: any) {
     const { amount } = request.body;
     const userId = getUserId(request);
 
-    if (!amount || amount <= 0) {
+    if (!amount || parseFloat(amount) <= 0) {
       return reply.status(400).send({ success: false, message: 'amount must be positive' });
     }
 
@@ -129,8 +132,12 @@ export async function fundRoutes(fastify: any) {
         return reply.status(404).send({ success: false, message: 'Fund not found' });
       }
 
-      const newAmount = parseFloat(fund.current_amount) + amount;
-      const progress = (newAmount / parseFloat(fund.target_amount)) * 100;
+      const amountNum = parseFloat(amount);
+      const currentNum = parseFloat(fund.current_amount);
+      const targetNum = parseFloat(fund.target_amount);
+
+      const newAmount = currentNum + amountNum;
+      const progress = (newAmount / targetNum) * 100;
       const now = Math.floor(Date.now() / 1000);
 
       await execute(
@@ -143,7 +150,7 @@ export async function fundRoutes(fastify: any) {
       await execute(
         `INSERT INTO transactions (id, user_id, type, amount, description, date, created_at, updated_at)
          VALUES ($1, $2, 'EXPENSE', $3, $4, $5, $6, $7)`,
-        [txId, userId, amount, `Nạp tiền vào quỹ: ${fund.name}`, now, now, now]
+        [txId, userId, amountNum, `Nạp tiền vào quỹ: ${fund.name}`, now, now, now]
       );
 
       return reply.send({

@@ -96,6 +96,13 @@ sealed class BottomNavItem(
         unselectedIcon = Icons.Outlined.BarChart
     )
 
+    object Market : BottomNavItem(
+        route = Screen.Market.route,
+        title = "Thị trường",
+        selectedIcon = Icons.Filled.ShowChart,
+        unselectedIcon = Icons.Outlined.ShowChart
+    )
+
     object Profile : BottomNavItem(
         route = Screen.Profile.route,
         title = "Cá nhân",
@@ -109,5 +116,6 @@ val bottomNavItems = listOf(
     BottomNavItem.Transactions,
     BottomNavItem.Accounts,
     BottomNavItem.Reports,
+    BottomNavItem.Market,
     BottomNavItem.Profile
 )

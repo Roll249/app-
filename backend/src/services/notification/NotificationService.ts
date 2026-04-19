@@ -203,9 +203,12 @@ export class NotificationService extends BaseService {
       return { success: false, error: 'Email service not configured' };
     }
 
-    // Placeholder for email service integration
-    this.logger.info(`[${this.getName()}] Sending email to ${email}: ${payload.title}`);
-    return { success: true, messageId: `email_${Date.now()}` };
+    // STUB: This is a placeholder. To enable real email sending:
+    // 1. Add EMAIL_API_KEY to backend/.env (SendGrid, Mailgun, etc.)
+    // 2. Replace this block with actual HTTP call to your email provider.
+    // See docs/THIRD_PARTY_SERVICES.md for provider recommendations.
+    this.logger.warn(`[${this.getName()}] [STUB] Would send email to ${email}: ${payload.title}`);
+    return { success: true, messageId: `email_stub_${Date.now()}` };
   }
 
   private async sendSMS(phone: string, message: string): Promise<NotificationResult> {
@@ -213,9 +216,12 @@ export class NotificationService extends BaseService {
       return { success: false, error: 'SMS service not configured' };
     }
 
-    // Placeholder for SMS service integration
-    this.logger.info(`[${this.getName()}] Sending SMS to ${phone}: ${message.substring(0, 50)}...`);
-    return { success: true, messageId: `sms_${Date.now()}` };
+    // STUB: This is a placeholder. To enable real SMS sending:
+    // 1. Add SMS_API_KEY and SMS_FROM to backend/.env (Twilio, VNPT, etc.)
+    // 2. Replace this block with actual HTTP call to your SMS provider.
+    // See docs/THIRD_PARTY_SERVICES.md for provider recommendations.
+    this.logger.warn(`[${this.getName()}] [STUB] Would send SMS to ${phone}: ${message.substring(0, 50)}...`);
+    return { success: true, messageId: `sms_stub_${Date.now()}` };
   }
 
   async setUserPreferences(preferences: UserNotificationPreferences): Promise<void> {

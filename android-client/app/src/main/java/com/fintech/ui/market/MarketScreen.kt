@@ -117,32 +117,22 @@ fun MarketScreen(
             }
 
             // Stock Indices Section
-            item {
-                EditorialSectionHeader(title = "Stock Indices")
-            }
+            if (state.stockIndices.isNotEmpty()) {
+                item {
+                    EditorialSectionHeader(title = "Stock Indices")
+                }
 
-            item {
-                EditorialIndexCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = Icons.Default.ShowChart,
-                    name = "VN-Index",
-                    subtitle = "Ho Chi Minh Stock Exchange",
-                    value = "1,254.35",
-                    change = "+0.85%",
-                    isPositive = true
-                )
-            }
-
-            item {
-                EditorialIndexCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = Icons.Default.Analytics,
-                    name = "Nasdaq",
-                    subtitle = "US Technology Stocks",
-                    value = "16,396.83",
-                    change = "-0.42%",
-                    isPositive = false
-                )
+                items(state.stockIndices) { index ->
+                    EditorialIndexCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        icon = Icons.Default.ShowChart,
+                        name = index.name,
+                        subtitle = index.code,
+                        value = String.format("%,.2f", index.currentValue),
+                        change = String.format("%+.2f%%", index.changePercent),
+                        isPositive = index.changePercent >= 0
+                    )
+                }
             }
 
             // Cryptocurrency Section
